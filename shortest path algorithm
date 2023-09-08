@@ -1,0 +1,132 @@
+#define T1 3  // Trigger pin for sensor 1
+#define E1 2     // Echo pin for sensor 1
+#define mp1_1 7
+#define mp1_2 8
+#define mp2_1 12
+#define mp2_2 13
+#define ep1 11
+#define ep2 10
+#define servoPin 9
+void setup() {
+  Serial.begin(9600);
+  pinMode(T1, OUTPUT);
+  pinMode(E1, INPUT);
+  pinMode(mp1_1, OUTPUT);
+  pinMode(mp1_2, OUTPUT);
+  pinMode(mp2_1, OUTPUT);
+  pinMode(mp2_2, OUTPUT);
+  pinMode(ep1, OUTPUT);
+  pinMode(ep2, OUTPUT);
+   pinMode(servoPin, OUTPUT);
+     int arr[100],i=0;
+  moveServo(45);
+}
+
+void loop() {
+    int df_ = Distance(T1, E1);
+  for (int angle = 45; angle <= 90; angle++) {
+    moveServo(angle);
+    delay(10); 
+  }
+  int dr_ = Distance(T1, E1);
+  for (int angle = 90; angle >= 0; angle--) {
+    moveServo(angle);
+    delay(10); 
+  }
+  int dl_ = Distance(T1, E1);
+  int df,dl,dr;
+  digitalWrite(ep1,HIGH);
+  digitalWrite(ep2,HIGH);
+  if(df_>50)df=0;else df=1;
+  if(dr_>50)dr=0;else dr=1;
+  if(dl_>50)dl=0;else dl=1;
+  digitalWrite(mp1_1, HIGH);
+  digitalWrite(mp1_2, LOW);
+  digitalWrite(mp2_1, HIGH);
+  digitalWrite(mp2_2, LOW);
+ delay(1600);
+  dl_ = Distance(T1, E1);
+  for (int angle = 0; angle <= 90; angle++) {
+    moveServo(angle);
+    delay(10); 
+  }
+  dr_ = Distance(T1, E1);
+  for (int angle = 90; angle >= 45; angle--) {
+    moveServo(angle);
+    delay(10); 
+  }
+  if(dl_>dr_)
+  {
+    int left_motor_speed = map(dl_, 0,6 , 0, 255);
+    analogWrite(10, left_motor_speed);
+   digitalWrite(mp1_1, HIGH);
+  digitalWrite(mp1_2, LOW);
+  digitalWrite(mp2_1, HIGH);
+  digitalWrite(mp2_2, LOW);
+    delay(160);
+  }
+
+  else if(dr_>=dl_)
+  {
+    int right_motor_speed = map(dr_, 0,6 , 0, 255);
+    analogWrite(10, right_motor_speed);
+  digitalWrite(mp1_1, HIGH);
+  digitalWrite(mp1_2, LOW);
+  digitalWrite(mp2_1, HIGH);
+  digitalWrite(mp2_2, LOW);delay(160);
+  }
+
+if(dl==0||dr==0){if(df+dl>1){if(i=0)i=1;else i=0;}
+if(dl==0)
+{if(i==0)
+arr[c]='L';
+else arr[c]=0;
+     digitalWrite(ep1,HIGH);
+  digitalWrite(ep2,HIGH);
+  digitalWrite(mp1_1, LOW);
+  digitalWrite(mp1_2, HIGH);
+  digitalWrite(mp2_1, HIGH);
+  digitalWrite(mp2_2, LOW);
+ delay(92);
+}
+else if(df==0);
+{if(i==0)
+{arr[c]='F';c++;}
+else {arr[c]=0;c--}}
+else
+{ if(i==0)
+{arr[c]='R';c++;}
+else {arr[c]=0;c--}
+  Serial.print(dr);
+  digitalWrite(ep1,HIGH);
+  digitalWrite(ep2,HIGH);
+  digitalWrite(mp1_1, HIGH);
+  digitalWrite(mp1_2, LOW);
+  digitalWrite(mp2_1, LOW);
+  digitalWrite(mp2_2, HIGH);
+ delay(92);
+} }
+else if(df==1&&dr==1&&dl==1)
+{ if(i==0)i=1;else i=0;
+    digitalWrite(ep1,HIGH);
+  digitalWrite(ep2,HIGH);
+  digitalWrite(mp1_1, HIGH);
+  digitalWrite(mp1_2, LOW);
+  digitalWrite(mp2_1, LOW);
+  digitalWrite(mp2_2, HIGH);
+ delay(184);
+}}
+int Distance(int tPin, int ePin) {
+  digitalWrite(tPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(tPin, HIGH);
+  delayMicroseconds(10);  
+  digitalWrite(tPin, LOW);
+  long duration = pulseIn(ePin, HIGH);
+  int distance = duration /58;
+  return distance;
+}
+void moveServo(int angle) {
+  int pwmValue = map(angle, 0, 90, 0, 190);
+  analogWrite(servoPin, pwmValue);
+}
